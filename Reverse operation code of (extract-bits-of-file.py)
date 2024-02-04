@@ -1,0 +1,31 @@
+import os
+import concurrent.futures
+
+def read_bits(file_path):
+    with open(file_path, 'r') as f:
+        while (chunk := f.read(102400)):
+            for bit in chunk:
+                yield int(bit)
+
+def write_bytes(file_path, bits):
+    with open(file_path, 'wb') as f:
+        byte = []
+        for bit in bits:
+            byte.append(bit)
+            if len(byte) == 8:
+                f.write(bytes([sum(b << (7 - j) for j, b in enumerate(>
+                byte = []
+
+def main():
+    file_path = input("Enter the file path: ")
+    dir_path = os.path.dirname(file_path)
+    output_path = os.path.join(dir_path, "output.bin")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as execu>
+        bits = executor.submit(read_bits, file_path)
+        executor.submit(write_bytes, output_path, bits.result())
+
+    print(f"Bytes written to {output_path}")
+
+if __name__ == "__main__":
+    main()
