@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Prompt the user for their choice
+echo "Select an option:"
+echo "1. Uninstall a package"
+echo "2. Clean Pacman cache and /tmp directory"
+read choice
+
+if [ "$choice" == "1" ]; then
+    # Prompt for package name to uninstall
+    echo "Enter the name of the package to uninstall:"
+    read package_name
+
+    # Uninstall the package
+    pacman -R "$package_name"
+
+    # Clean Pacman cache with automatic "y" and "n" inputs
+    (echo "y"; sleep 1; echo "n") | pacman -Sc
+
+    # Remove orphaned packages
+    pacman -Rns $(pacman -Qdtq) --noconfirm
+
+    # Clean /tmp directory
+    rm -rf /tmp/*
+
+elif [ "$choice" == "2" ]; then
+    # Clean Pacman cache with automatic "y" and "n" inputs
+    (echo "y"; sleep 1; echo "n") | pacman -Sc
+
+    # Remove orphaned packages
+    pacman -Rns $(pacman -Qdtq) --noconfirm
+
+    # Clean /tmp directory
+    rm -rf /tmp/*
+
+else
+    echo "Invalid choice. Exiting."
+fi
